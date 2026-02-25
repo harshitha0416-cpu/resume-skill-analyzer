@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Resume Skill Gap Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            text-align: center;
+        }
+
+        .container {
+            width: 55%;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            margin-top: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        select, input[type="file"] {
+            padding: 8px;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 10px 25px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result-section {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .skills-box {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .matched {
+            color: green;
+        }
+
+        .missing {
+            color: red;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        li {
+            padding: 5px 0;
+        }
+
+        hr {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>AI Resume Skill Gap Analyzer</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        <label><b>Select Job Role:</b></label><br>
+        <select name="role">
+            <option>Python Developer</option>
+            <option>Web Developer</option>
+            <option>Data Analyst</option>
+            <option>Java Developer</option>
+        </select>
+        <br><br>
+
+        <input type="file" name="resume" required>
+        <br><br>
+
+        <button type="submit">Analyze</button>
+    </form>
+
+    {% if score %}
+    <hr>
+
+    <div class="result-section">
+        <h3>Match Score: {{ score }}%</h3>
+
+        <div class="skills-box">
+            <h4 class="matched">Matched Skills</h4>
+            <ul>
+                {% for skill in matched %}
+                <li>✔ {{ skill }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="skills-box">
+            <h4 class="missing">Missing Skills</h4>
+            <ul>
+                {% for skill in missing %}
+                <li>✖ {{ skill }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    {% endif %}
+</div>
+
+</body>
+</html>
