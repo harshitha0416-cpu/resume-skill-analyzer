@@ -30,11 +30,7 @@ def index():
     missing = []
 
     if request.method == "POST":
-        role = request.form["role"]
-        resume = request.files["resume"]
-
-        if resume:
-            resume_text = extract_text_from_pdf(resume)
+        role = request.form["role"](resume)
             required_skills = job_roles[role]
 
             for skill in required_skills:
@@ -52,6 +48,4 @@ def index():
 
 
 if __name__ == "__main__":
-    # Open browser automatically
-    threading.Timer(1, lambda: webbrowser.open("http://127.0.0.1:5000")).start()
-    app.run(debug=True, use_reloader=False)
+    app.run(host="0.0.0.0", port=5000)
