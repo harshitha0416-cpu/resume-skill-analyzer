@@ -1,11 +1,9 @@
 from flask import Flask, render_template, request
 import PyPDF2
-import webbrowser
-import threading
+import os
 
 app = Flask(__name__)
 
-# Job role skills database
 job_roles = {
     "Python Developer": ["python", "django", "sql", "git"],
     "Web Developer": ["html", "css", "javascript", "react"],
@@ -13,15 +11,14 @@ job_roles = {
     "Java Developer": ["java", "spring", "mysql", "git"]
 }
 
-
-# Function to extract text from PDF
 def extract_text_from_pdf(file):
     reader = PyPDF2.PdfReader(file)
     text = ""
     for page in reader.pages:
-        text += page.extract_text()
+        content = page.extract_text()
+        if content:
+            text += content
     return text.lower()
-
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -30,7 +27,11 @@ def index():
     missing = []
 
     if request.method == "POST":
-        role = request.form["role"](resume)
+        role = request.form.get("role")
+        file = request.files.get("resume")
+
+        if file and role in job_roles:
+            resume_text = extract_text_from_pdf(file)
             required_skills = job_roles[role]
 
             for skill in required_skills:
@@ -41,11 +42,12 @@ def index():
 
             score = int((len(matched) / len(required_skills)) * 100)
 
-    return render_template("index.html",
-                           score=score,
-                           matched=matched,
-                           missing=missing)
-
+    return render_template(
+        "index.html",
+        score=score,
+        matched=matched,
+        missing=missing
+    )
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
